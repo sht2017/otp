@@ -13,8 +13,6 @@ class otp:
 
     @property
     def keyfile(self):
-        if not os.path.isdir(self.homePath):
-            os.makedirs(self.homePath)
         if not os.path.isfile(self.keyPath):
             self.setupOtp()
         with open(self.keyPath,'r') as key:
@@ -37,6 +35,8 @@ class otp:
         return (pyqrcode.create(url).terminal())
 
     def setupOtp(self):
+        if not os.path.isdir(self.homePath):
+            os.makedirs(self.homePath)
         self.keyfile=self.key()
         url=pyotp.TOTP(self.keyfile).provisioning_uri(self.ip, issuer_name=self.user)
         with open(self.homePath+"/.url",'w',encoding='utf-8') as urifile:
