@@ -1,5 +1,4 @@
 apt update
-apt upgrade
 apt dist-upgrade -y
 apt install libsodium-dev nginx python3 python3-pip screen -y
 pip install pyotp pillow pyqrcode
