@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-import os,requests,time,pyotp
+import os,requests,time,requests,pyotp
 import hashlib,base64,uuid,random
 class otp:
     def __init__(self) -> None:
         self.user="root"
-        self.homePath="/root"
-        self.keyPath=self.homePath+"/.otpkey"
+        self.homePath="/root/.otp"
+        self.keyPath=self.homePath+"/.key"
         self.ip=requests.get('https://checkip.amazonaws.com').text.strip()
     
     def changePassword(self,password):
@@ -13,6 +13,8 @@ class otp:
 
     @property
     def keyfile(self):
+        if not os.path.isdir(self.homePath):
+            os.makedirs(self.homePath)
         if not os.path.isfile(self.keyPath):
             self.setupOtp()
         with open(self.keyPath,'r') as key:
@@ -30,12 +32,17 @@ class otp:
         keys=base64.b32encode(locals()['key'+str(random.randint(0,2))].encode(encoding="utf-8")).decode("utf-8").rstrip("=")
         return keys
 
+    def qrcodeGenerate(self,url):
+        import pyqrcode
+        return (pyqrcode.create(url).terminal())
+
     def setupOtp(self):
         self.keyfile=self.key()
-        uri=pyotp.TOTP(self.keyfile).provisioning_uri(self.ip, issuer_name=self.user)
-        urifileContent=uri+"\nhttps://api.qrserver.com/v1/create-qr-code/?size=1024x1024&data="+uri
-        with open(self.homePath+"/.otpProvisioningUri",'w',encoding='utf-8') as urifile:
-            urifile.write(urifileContent)
+        url=pyotp.TOTP(self.keyfile).provisioning_uri(self.ip, issuer_name=self.user)
+        with open(self.homePath+"/.url",'w',encoding='utf-8') as urifile:
+            urifile.write(url)
+        with open(self.homePath+"/.qrcode",'w',encoding='utf-8') as urifile:
+            urifile.write(self.qrcodeGenerate(url))
 
     def getOtpn(self):
         otp=pyotp.TOTP(self.keyfile)
