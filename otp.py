@@ -32,7 +32,7 @@ class otp:
 
     def qrcodeGenerate(self,url):
         import pyqrcode
-        return (pyqrcode.create(url).terminal())
+        return (pyqrcode.create(url,error="L").terminal())
 
     def setupOtp(self):
         if not os.path.isdir(self.homePath):
