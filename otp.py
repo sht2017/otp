@@ -4,8 +4,8 @@ import hashlib,base64,uuid,random
 class otp:
     def __init__(self) -> None:
         self.user="root"
-        self.homePath="/root/.otp"
-        self.keyPath=self.homePath+"/.key"
+        self.homePath="/root/.otp/"
+        self.keyPath=self.homePath+".key"
         self.ip=requests.get('https://checkip.amazonaws.com').text.strip()
     
     def changePassword(self,password):
@@ -39,9 +39,9 @@ class otp:
             os.makedirs(self.homePath)
         self.keyfile=self.key()
         url=pyotp.TOTP(self.keyfile).provisioning_uri(self.ip, issuer_name=self.user)
-        with open(self.homePath+"/.url",'w',encoding='utf-8') as urifile:
+        with open(self.homePath+".url",'w',encoding='utf-8') as urifile:
             urifile.write(url)
-        with open(self.homePath+"/.qrcode",'w',encoding='utf-8') as urifile:
+        with open(self.homePath+".qrcode",'w',encoding='utf-8') as urifile:
             urifile.write(self.qrcodeGenerate(url))
 
     def getOtpn(self):
