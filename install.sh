@@ -1,7 +1,7 @@
 apt update
 apt dist-upgrade -y
 apt install libsodium-dev nginx python3 python3-pip screen -y
-pip install pyotp pillow pyqrcode
+pip install pyotp pyqrcode
 systemctl start rc-local
 systemctl enable rc-local
 mkdir /etc/otp
